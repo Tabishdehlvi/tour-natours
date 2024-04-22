@@ -28,14 +28,12 @@ if (loginForm) {
 }
 
 if (userDataForm) {
-  console.log('check user data trigger');
   userDataForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const form = new FormData();
     form.append('name', document.getElementById('name').value);
     form.append('email', document.getElementById('email').value);
     form.append('photo', document.getElementById('photo').files[0]);
-    console.log('form Data'.form);
 
     updateSettings(form, 'data');
   });
@@ -64,7 +62,6 @@ if (userPasswordForm) {
 
 if (bookBtn) {
   bookBtn.addEventListener('click', (e) => {
-    console.log('booking start');
     e.target.textContent = 'Processing...';
     const { tourId } = e.target.dataset;
     bookTour(tourId);

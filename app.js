@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 const XSS = require('xss-clean');
@@ -83,6 +84,8 @@ app.use(
     ],
   })
 );
+
+app.use(compression());
 
 // Test middlewares
 app.use((req, res, next) => {

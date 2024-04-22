@@ -6,7 +6,6 @@ const handleCastErrorDB = (err) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
-  console.log('ERR', err);
   const value = err.keyValue.email;
   const message = `Duplicate field value: '${value}'. Please use another value`;
   return new AppError(message, 400);
@@ -37,6 +36,7 @@ const sendErrorDev = (err, req, res) => {
     });
   } else {
     // B) RENDERED WEBSITE
+    console.log('ERROR 🌟', err);
     res.status(err.statusCode).render('error', {
       title: 'Something went wrong',
       msg: err.message,
@@ -56,7 +56,7 @@ const sendErrorProd = (err, req, res) => {
       // b) Programming or other unkown error: don't leak error details
     } else {
       // 1) Log eror
-      // console.log('ERROR 🌟', err);
+      console.log('ERROR 🌟', err);
       // 2) Sent generit message
       res.status(500).json({
         status: 'error',
@@ -74,7 +74,7 @@ const sendErrorProd = (err, req, res) => {
       // b) Programming or other unkown error: don't leak error details
     } else {
       // 1) Log eror
-      // console.log('ERROR 🌟', err);
+      console.log('ERROR 🌟', err);
       // 2) Sent generit message
       res.status(err.statusCode).render('error', {
         title: 'Something went wrong',

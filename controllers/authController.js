@@ -46,7 +46,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   // )}/api/v1/users/resetPassword/${resetToken}`;
 
   const url = `${req.protocol}://${req.get('host')}/me`;
-  console.log('URL', url);
+  // console.log('URL', url);
   await new Email(newUser, url).sendWelcome();
   createSendToken(newUser, 201, res);
 });
@@ -154,8 +154,6 @@ exports.isLoggedIn = async (req, res, next) => {
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
-    console.log('req.user.role', req.user.role);
-    console.log('roles', roles);
     if (!roles.includes(req.user.role)) {
       return next(
         new AppError('You dont have permisssion to perform this action', 403)
@@ -191,7 +189,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
       message: 'Reset Password link sent to your email!',
     });
   } catch (err) {
-    console.log(err);
     user.password_reset_token = undefined;
     user.password_reset_expires = undefined;
     await user.save({ validateBeforeSave: false });

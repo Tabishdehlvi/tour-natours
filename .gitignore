@@ -12,3 +12,4 @@
 /config.env
 # /.eslintrc.json
 # /.prettierrc
+/.cache

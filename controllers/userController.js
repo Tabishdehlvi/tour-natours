@@ -1,6 +1,53 @@
+const multer = require('multer');
+const sharp = require('sharp');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
+const factory = require('./handlerFactory');
+
+// Uploade image directly into the Disk Storage without resizing
+
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'public/img/users');
+//   },
+//   filename: (req, file, cb) => {
+//     const ext = file.mimetype.split('/')[1];
+//     cb(null, `user-${req.user._id}-${Date.now()}.${ext}`);
+//   },
+// });
+
+// Uploade image in memory Storage like temporary buffer
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image! Please upload only images', 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+exports.uploadUserPhoto = upload.single('photo');
+
+exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+
+  req.file.filename = `user-${req.user._id}-${Date.now()}.jpeg`;
+
+  await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+
+  next();
+});
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -8,6 +55,16 @@ const filterObj = (obj, ...allowedFields) => {
     if (allowedFields.includes(el)) newObj[el] = obj[el];
   });
   return newObj;
+};
+
+exports.getAllUsers = factory.getAll(User);
+exports.getUser = factory.getOne(User);
+exports.updateUser = factory.updateOne(User);
+exports.deleteUser = factory.deleteOne(User);
+
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user._id;
+  next();
 };
 
 exports.updateMe = catchAsync(async (req, res, next) => {
@@ -24,7 +81,11 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   // 2) Update user document
   const filteredBody = filterObj(req.body, 'name', 'email');
 
-  const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
+  if (req.file) {
+    filteredBody.photo = req.file.filename;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(req.user._id, filteredBody, {
     new: true,
     runValidators: true,
   });
@@ -38,7 +99,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
-  await User.findByIdAndUpdate(req.user.id, { active: false });
+  await User.findByIdAndUpdate(req.user._id, { active: false });
   res.status(204).json({
     status: 'success',
     data: null,
@@ -47,81 +108,9 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 
 //___________________________________________________________________
 
-exports.getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'success',
-    result: users.length,
-    data: { users },
-  });
-});
-
-exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
-
-  if (!user) {
-    return next(new AppError('No tour found with that ID', 404));
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: { user },
-  });
-});
-
 exports.createUser = (req, res) => {
-  const newId = users[users.length - 1]._id + 1;
-  const newUser = Object.assign({ _id: newId }, req.body);
-
-  users.push(newUser);
-
-  fs.writeFile(
-    `${__dirname}/dev-data/data/users.json`,
-    JSON.stringify(users),
-    (err) => {
-      res.status(201).json({
-        status: 'success',
-        data: {
-          user: newUser,
-        },
-      });
-    }
-  );
-};
-
-exports.updateUser = (req, res) => {
-  const _id = req.params.id * 1;
-  const user = users.find((item) => item.id === _id);
-
-  if (!user) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user: '<Updated tour here...>',
-    },
-  });
-};
-
-exports.deleteUser = (req, res) => {
-  const _id = req.params.id * 1;
-  const user = users.find((item) => item.id === _id);
-
-  if (!user) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
-  res.status(204).json({
-    status: 'success',
-    data: null,
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not defined! Please use /signup instead',
   });
 };

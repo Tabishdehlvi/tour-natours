@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
-    default: '',
+    default: 'default.jpg',
   },
   role: {
     type: String,
@@ -52,6 +52,8 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
+  // __v: { type: Number, select: false },
+  // id: { type: String, select: false },
 });
 
 userSchema.pre('save', async function (next) {

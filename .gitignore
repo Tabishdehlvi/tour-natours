@@ -4,11 +4,11 @@
 /node_modules
 
 # production
-/build
-out
-.next
+# /build
+# out
+# .next
 
 # misc
 /config.env
-/.eslintrc.json
-/.prettierrc
+# /.eslintrc.json
+# /.prettierrc

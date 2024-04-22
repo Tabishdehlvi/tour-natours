@@ -376,7 +376,7 @@ body {
     to(#28b487)
   );
   background-image: linear-gradient(to right bottom, #7dd56f, #28b487);
-  opacity: 0.85;
+  opacity: 0.3;
 }
 
 .heading-box {
@@ -607,6 +607,7 @@ body {
   overflow-x: scroll;
   -ms-scroll-snap-type: x mandatory;
   scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
 }
 .reviews__card {
   width: 30rem;
@@ -1116,7 +1117,7 @@ body {
     to(#28b487)
   );
   background-image: linear-gradient(to right bottom, #7dd56f, #28b487);
-  opacity: 0.7;
+  opacity: 0.3;
 }
 .card__picture-img {
   -o-object-fit: cover;

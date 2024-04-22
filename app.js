@@ -23,16 +23,28 @@ const app = express();
 
 app.enable('trust proxy');
 
+// const corsOptions = {
+//   origin: 'http://127.0.0.1:4000',
+//   credentials: true, //access-control-allow-credentials:true
+//   optionSuccessStatus: 200,
+// };
+
 // GLOBAL MIDDLEWARES
+
+// Implement CORS
+app.use(cors());
+
+// Access-Control-Allow-Origin *
+// // api.natours.com, front-end natours.com
+// app.use(cors({
+//   origin: "https://www.natours.com"
+// }))
+
+app.options('*', cors());
+// app.options('/api/v1/tours/:id', cors());
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
-const corsOptions = {
-  origin: 'http://127.0.0.1:4000',
-  credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));

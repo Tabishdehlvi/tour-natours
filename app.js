@@ -21,6 +21,8 @@ const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
 
+app.enable('trust proxy');
+
 // GLOBAL MIDDLEWARES
 
 // Serving static files

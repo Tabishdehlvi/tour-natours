@@ -3,6 +3,7 @@ import { login, logout } from './login';
 import { displayMap } from './mapbox';
 import { updateSettings } from './updateSetting';
 import { bookTour } from './stripe';
+import { showAlert } from './alert';
 
 // DOM Elements
 const mapBox = document.getElementById('map');
@@ -71,3 +72,6 @@ if (bookBtn) {
 if (loginOutBtn) {
   loginOutBtn.addEventListener('click', logout);
 }
+
+const alertMessage = document.querySelector('body').dataset.alert;
+if (alert) showAlert('success', alertMessage, 20);
